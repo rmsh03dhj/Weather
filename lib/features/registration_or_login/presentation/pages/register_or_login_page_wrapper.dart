@@ -1,0 +1,326 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:weather/core/routes/weather_app_routes.dart';
+import 'package:weather/core/services/location_service.dart';
+import 'package:weather/core/services/service_locator.dart';
+import 'package:weather/core/services/navigation_service.dart';
+import 'package:weather/features/dashboard/presentation/bloc/weather_bloc.dart';
+import 'package:weather/features/dashboard/presentation/bloc/weather_event.dart';
+import 'package:weather/features/registration_or_login/presentation/bloc/registration_or_login_bloc.dart';
+import 'package:weather/features/registration_or_login/presentation/bloc/registration_or_login_event.dart';
+import 'package:weather/features/registration_or_login/presentation/bloc/registration_or_login_state.dart';
+import 'package:weather/features/utils/constants/strings.dart';
+import 'package:weather/features/utils/validators.dart';
+import 'package:weather/features/utils/widgets/weather_app_button_full_width.dart';
+import 'package:weather/features/utils/widgets/weather_app_form_builder_text_field.dart';
+
+class RegistrationOrLoginPageWrapper extends StatelessWidget {
+
+  const RegistrationOrLoginPageWrapper();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: RegistrationOrLoginPage(),
+    );
+  }
+}
+
+class RegistrationOrLoginPage extends StatefulWidget {
+
+  RegistrationOrLoginPage();
+
+  @override
+  _RegistrationOrLoginPageState createState() => _RegistrationOrLoginPageState();
+}
+
+class _RegistrationOrLoginPageState extends State<RegistrationOrLoginPage> {
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
+  FocusNode _emailFocusNode = FocusNode();
+  FocusNode _passwordFocusNode = FocusNode();
+  FocusNode _confirmPasswordFocusNode = FocusNode();
+  final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
+  bool _passwordVisible = true;
+  bool _confirmPasswordVisible = true;
+  final _navigateService = sl<NavigationService>();
+  bool _signIn = true;
+  Position position;
+  final locationService = sl<LocationService>();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.text = "dhoju.ramesh03@gmail.com";
+    _passwordController.text = "12345678";
+    _confirmPasswordController.text = "12345678";
+    getLocation();
+  }
+
+void getLocation() async {
+  position = await locationService.getLocation();
+}
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<RegistrationOrLoginBloc, RegistrationOrLoginState>(
+        listener: (context, state) {
+      if (state is SignUpFailedState) {
+        Scaffold.of(context)
+          ..showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 5),
+            ),
+          );
+      }
+      if (state is SignInFailedState) {
+        Scaffold.of(context)
+          ..showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 5),
+            ),
+          );
+      }
+      if (state is SignInSuccessState || state is SignUpSuccessState) {
+        BlocProvider.of<WeatherBloc>(context)
+          ..add(FetchWeather(longitude: position.longitude, latitude: position.latitude));
+        _navigateService.navigateToAndReplace(WeatherAppRoutes.dashboard);
+      }
+    }, child: SingleChildScrollView(
+      child:
+          BlocBuilder<RegistrationOrLoginBloc, RegistrationOrLoginState>(builder: (context, state) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Image.asset(
+                "assets/login_icon.png",
+                scale: 5,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Card(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  child: FormBuilder(
+                    key: _formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 16,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: WeatherAppFormBuilderTextField(
+                              attribute: email,
+                              controller: _emailController,
+                              enableSuggestions: false,
+                              autoCorrect: false,
+                              validators: [
+                                Validators.required(),
+                              ],
+                              label: email,
+                              prefixIcon: Icon(Icons.person),
+                              keyboardType: TextInputType.emailAddress,
+                              focusNode: _emailFocusNode,
+                              onChanged: (val) {
+                                setState(() {
+                                  _formKey.currentState.fields[email].currentState.validate();
+                                });
+                              },
+                            ),
+                          ),
+                          Container(
+                            height: 16,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: WeatherAppFormBuilderTextField(
+                              attribute: password,
+                              decoration: InputDecoration(
+                                labelText: password,
+                                border: new OutlineInputBorder(
+                                    borderSide: new BorderSide(color: Colors.grey)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: Theme.of(context).accentColor)),
+                                focusedErrorBorder:
+                                    OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                                errorStyle: TextStyle(
+                                  color: Colors.red,
+                                ),
+                                prefixIcon: Icon(Icons.lock),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _passwordVisible ? Icons.visibility_off : Icons.visibility,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _passwordVisible = !_passwordVisible;
+                                    });
+                                  },
+                                ),
+                              ),
+                              controller: _passwordController,
+                              obscureText: _passwordVisible,
+                              validators: [
+                                Validators.required(),
+                              ],
+                              keyboardType: TextInputType.text,
+                              focusNode: _passwordFocusNode,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context).unfocus();
+                              },
+                              onChanged: (val) {
+                                setState(() {
+                                  _formKey.currentState.fields[password].currentState.validate();
+                                });
+                              },
+                            ),
+                          ),
+                          !_signIn
+                              ? Container(
+                                  height: 16,
+                                )
+                              : Container(),
+                          !_signIn
+                              ? WeatherAppFormBuilderTextField(
+                                  attribute: confirmPassword,
+                                  decoration: InputDecoration(
+                                    labelText: confirmPassword,
+                                    border: new OutlineInputBorder(
+                                        borderSide: new BorderSide(color: Colors.grey)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                        borderSide:
+                                            BorderSide(color: Theme.of(context).accentColor)),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.red)),
+                                    errorStyle: TextStyle(
+                                      color: Colors.red,
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _confirmPasswordVisible
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _confirmPasswordVisible = !_confirmPasswordVisible;
+                                        });
+                                      },
+                                    ),
+                                    prefixIcon: Icon(Icons.lock),
+                                  ),
+                                  controller: _confirmPasswordController,
+                                  obscureText: _confirmPasswordVisible,
+                                  validators: [],
+                                  keyboardType: TextInputType.text,
+                                  focusNode: _confirmPasswordFocusNode,
+                                  onFieldSubmitted: (_) {
+                                    FocusScope.of(context).unfocus();
+                                  },
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _formKey.currentState.fields[confirmPassword].currentState
+                                          .validate();
+                                    });
+                                  },
+                                )
+                              : Container(),
+                          Container(
+                            height: 16,
+                          ),
+                          BlocBuilder<RegistrationOrLoginBloc, RegistrationOrLoginState>(
+                              builder: (context, state) {
+                            return WeatherAppButtonFullWidth(
+                              text: _signIn ? signIn : signUp,
+                              showCircularProgressIndicator:
+                                  (state is RegistrationOrLoginProcessingState) ? true : false,
+                              showTickSymbol:
+                                  (state is SignInSuccessState || state is SignUpSuccessState)
+                                      ? true
+                                      : false,
+                              onPressed: () {
+                                if (_formKey.currentState.validate()) {
+                                  if (_signIn) {
+                                    BlocProvider.of<RegistrationOrLoginBloc>(context)
+                                        .add(SignInPressed(
+                                      _emailController.text,
+                                      _passwordController.text,
+                                    ));
+                                  } else {
+                                    BlocProvider.of<RegistrationOrLoginBloc>(context)
+                                        .add(SignUpPressed(
+                                      _emailController.text,
+                                      _passwordController.text,
+                                    ));
+                                  }
+                                }
+                              },
+                            );
+                          }),
+                          Container(
+                            height: 16,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _signIn = !_signIn;
+                                  });
+                                },
+                                child: Text(
+                                  _signIn ? signUp : signIn,
+                                  style:
+                                      TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 12,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      }),
+    ));
+  }
+
+  void dispose() {
+    _emailController.dispose();
+    _emailFocusNode.dispose();
+    _passwordController.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+}

@@ -1,0 +1,15 @@
+const String password = 'Password';
+const String email = 'Email';
+const String confirmPassword = 'Confirm Password';
+const String signUp = 'Sign Up';
+const String signIn = 'Sign In';
+const String confirmButton = 'Confirm';
+const String cancelButton = 'Cancel';
+const String signInFailed = 'Sign in failed';
+const String signUpFailed = 'Sign up failed';
+const String pleaseTryAgain = 'Please try again.';
+const String changeCity = 'Change City';
+const String logout = 'Log out';
+const String cityName = 'City Name';
+const String weatherApp = 'WEATHER APP';
+const String okButton = 'OK';

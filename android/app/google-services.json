@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "359721657293",
+    "project_id": "weatherapp-d41d4",
+    "storage_bucket": "weatherapp-d41d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359721657293:android:07f93114e9dba63f1e1a84",
+        "android_client_info": {
+          "package_name": "com.rdhoju.weather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "359721657293-ivh916c5i3jlv8m6e1u76khkhgv9qk23.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7C8z0ogrq4GosWeIdptna51n65_zXuIw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "359721657293-ivh916c5i3jlv8m6e1u76khkhgv9qk23.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "359721657293-4ntck40mdentksrm7ucr1738rvuoeag1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.rdhoju.weather"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

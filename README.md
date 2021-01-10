@@ -1,6 +1,6 @@
 # Weather App
 
-This Weather application is developed using Flutter Framework. I have followed [flutter clean TDD architecture](https://pub.dev/packages/flutter_clean_architecture), used [flutter bloc](https://pub.dev/packages/flutter_bloc) for state management and [dartz](https://pub.dev/packages/dartz) which makes error handling easier. 
+This Weather application is developed using Flutter Framework. I have followed clean code architecture, used [flutter bloc](https://pub.dev/packages/flutter_bloc) for state management and [dartz](https://pub.dev/packages/dartz) which makes error handling easier. 
 
 This app basically have 3 screens namely splash screen, login or sign up screen and dashboard screen to display weather information. 
 

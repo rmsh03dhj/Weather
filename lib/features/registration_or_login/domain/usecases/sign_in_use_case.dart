@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:weather/core/error/failure.dart';
 import 'package:weather/core/services/service_locator.dart';
 import 'package:weather/features/registration_or_login/domain/repositories/user_repository.dart';
-import 'package:weather/features/registration_or_login/domain/usecases/base_use_case.dart';
+import 'package:weather/core/usecases/base_use_case.dart';
 import 'package:weather/features/utils/constants/strings.dart';
 
 abstract class SignInUseCase implements BaseUseCase<User, SignInParams> {}

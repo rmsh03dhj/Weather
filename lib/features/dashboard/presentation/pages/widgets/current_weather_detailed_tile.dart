@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weather/features/dashboard/domain/entities/weather.dart';
 import 'package:weather/features/dashboard/presentation/pages/widgets/current_weather_condition.dart';
-import 'package:weather/features/dashboard/presentation/pages/widgets/daily_weather_forcast_tile.dart';
+import 'package:weather/features/dashboard/presentation/pages/widgets/hourly_weather_forcast_tile.dart';
 import 'package:weather/features/dashboard/presentation/pages/widgets/value_tile.dart';
-
 
 class CurrentWeatherDetailedTile extends StatelessWidget {
   final Weather weather;
@@ -17,7 +16,9 @@ class CurrentWeatherDetailedTile extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Container(height: 72,),
+          Container(
+            height: 60,
+          ),
           Text(
             this.weather.cityName.toUpperCase(),
             style: TextStyle(
@@ -48,7 +49,7 @@ class CurrentWeatherDetailedTile extends StatelessWidget {
             child: Divider(),
             padding: EdgeInsets.all(10),
           ),
-          DailyWeatherForcastTile(weathers: weather.forecast),
+          HourlyWeatherForcastTile(weathers: weather.forecast),
           Padding(
             child: Divider(
               color: Theme.of(context).accentColor.withAlpha(50),
@@ -92,7 +93,7 @@ class CurrentWeatherDetailedTile extends StatelessWidget {
                 color: Theme.of(context).accentColor.withAlpha(50),
               )),
             ),
-            ValueTile("humidity", '${this.weather.humidity}%'),
+            ValueTile("humidity", '${this.weather.humidity} %'),
           ]),
         ],
       ),

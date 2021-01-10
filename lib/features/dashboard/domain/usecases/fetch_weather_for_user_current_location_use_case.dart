@@ -5,7 +5,7 @@ import 'package:weather/core/services/service_locator.dart';
 import 'package:weather/features/app_start/domain/usecases/check_for_authentication_use_case.dart';
 import 'package:weather/features/dashboard/domain/entities/weather.dart';
 import 'package:weather/features/dashboard/domain/usecases/fetch_weather_for_given_coordinates_use_case.dart';
-import 'package:weather/features/registration_or_login/domain/usecases/base_use_case.dart';
+import 'package:weather/core/usecases/base_use_case.dart';
 
 abstract class FetchWeatherForCurrentLocationUseCase implements BaseUseCase<Weather, NoParams> {}
 

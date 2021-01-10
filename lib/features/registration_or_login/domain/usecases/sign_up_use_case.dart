@@ -6,7 +6,7 @@ import 'package:weather/core/services/service_locator.dart';
 import 'package:weather/features/registration_or_login/domain/repositories/user_repository.dart';
 import 'package:weather/features/utils/constants/strings.dart';
 
-import 'base_use_case.dart';
+import '../../../../core/usecases/base_use_case.dart';
 
 abstract class SignUpUseCase implements BaseUseCase<User, SignUpParams> {}
 

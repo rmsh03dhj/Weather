@@ -136,6 +136,9 @@ class _RegistrationOrLoginPageState extends State<RegistrationOrLoginPage> {
                                   _formKey.currentState.fields[emailText].currentState.validate();
                                 });
                               },
+                              onFieldSubmitted: (_) {
+                                fieldFocusChange(context, _emailFocusNode, _passwordFocusNode);
+                              },
                             ),
                           ),
                           Container(
@@ -319,5 +322,10 @@ class _RegistrationOrLoginPageState extends State<RegistrationOrLoginPage> {
     _confirmPasswordController.dispose();
     _confirmPasswordFocusNode.dispose();
     super.dispose();
+  }
+
+  void fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
   }
 }

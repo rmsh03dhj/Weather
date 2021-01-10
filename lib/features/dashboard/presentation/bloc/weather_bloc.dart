@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:weather/core/services/service_locator.dart';
 import 'package:weather/features/app_start/domain/usecases/check_for_authentication_use_case.dart';
-import 'package:weather/features/dashboard/domain/usecases/fetch_weather__for_given_city_use_case.dart';
+import 'package:weather/features/dashboard/domain/usecases/fetch_weather_for_given_city_use_case.dart';
 import 'package:weather/features/dashboard/domain/usecases/fetch_weather_for_given_coordinates_use_case.dart';
 import 'package:weather/features/dashboard/domain/usecases/fetch_weather_for_user_current_location_use_case.dart';
 import 'package:weather/features/dashboard/presentation/bloc/weather_event.dart';

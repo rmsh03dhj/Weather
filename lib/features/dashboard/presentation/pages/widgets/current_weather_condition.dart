@@ -19,27 +19,24 @@ class CurrentWeatherCondition extends StatelessWidget {
           height: 20,
         ),
         Text(
-          '${this.weather.temperature.celsius.round()}°',
+          '${this.weather.temperature.celsius.round()} \u2103',
           style: TextStyle(
-              fontSize: 100,
-              fontWeight: FontWeight.w100,
+            fontSize: 100,
+            fontWeight: FontWeight.w100,
           ),
         ),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          ValueTile("max",
-              '${this.weather.maxTemperature.celsius.round()}°'),
+          ValueTile("max", '${this.weather.maxTemperature.celsius.round()} \u2103'),
           Padding(
             padding: const EdgeInsets.only(left: 15, right: 15),
             child: Center(
                 child: Container(
               width: 1,
               height: 30,
-              color:
-                  Theme.of(context).disabledColor,
+              color: Theme.of(context).disabledColor,
             )),
           ),
-          ValueTile("min",
-              '${this.weather.minTemperature.celsius.round()}°'),
+          ValueTile("min", '${this.weather.minTemperature.celsius.round()} \u2103'),
         ]),
       ],
     );

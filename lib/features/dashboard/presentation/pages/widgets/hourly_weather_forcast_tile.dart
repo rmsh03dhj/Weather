@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:weather/features/dashboard/domain/entities/weather.dart';
 import 'package:weather/features/dashboard/presentation/pages/widgets/value_tile.dart';
 
-class DailyWeatherForcastTile extends StatelessWidget {
-  const DailyWeatherForcastTile({
+class HourlyWeatherForcastTile extends StatelessWidget {
+  const HourlyWeatherForcastTile({
     Key key,
     @required this.weathers,
   }) : super(key: key);
@@ -14,7 +14,7 @@ class DailyWeatherForcastTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 70,
+      height: 100,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
@@ -29,10 +29,22 @@ class DailyWeatherForcastTile extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child: Center(
-                child: ValueTile(
-              DateFormat('E, ha').format(DateTime.fromMillisecondsSinceEpoch(item.time * 1000)),
-              '${item.temperature.celsius.round()}°',
-              iconData: item.getIconData(),
+                child: Card(
+              child: Container(
+                decoration: new BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ValueTile(
+                    DateFormat('E, h a')
+                        .format(DateTime.fromMillisecondsSinceEpoch(item.time * 1000)),
+                    '${item.temperature.celsius.round()} \u2103',
+                    iconData: item.getIconData(),
+                  ),
+                ),
+              ),
             )),
           );
         },

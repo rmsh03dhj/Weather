@@ -10,4 +10,35 @@ class Validators {
       return null;
     };
   }
+
+  static FormFieldValidator length() {
+    return (value) {
+      if (value != null && value.isNotEmpty) {
+        if (value.length < 8) return "Length should be greater than 8.";
+      }
+      return null;
+    };
+  }
+
+  static FormFieldValidator emailValidator() {
+    return (value) {
+      String emailRegex =
+          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+
+      RegExp regExp = new RegExp(emailRegex);
+      if (!regExp.hasMatch(value)) {
+        return "Invalid Email Address.";
+      }
+      return null;
+    };
+  }
+
+  static FormFieldValidator confirmPasswordMatchWithPassword(String matchWith) {
+    return (value) {
+      if (value != null && value.isNotEmpty) {
+        if (value != matchWith) return "Your password and confirm password doesn't match.";
+      }
+      return null;
+    };
+  }
 }

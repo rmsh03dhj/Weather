@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:weather/core/routes/weather_app_routes.dart';
 import 'package:weather/core/services/service_locator.dart';
@@ -15,19 +15,20 @@ import 'package:weather/features/utils/constants/strings.dart';
 import 'package:weather/features/utils/widgets/weather_app_button.dart';
 import 'package:weather/features/utils/widgets/weather_app_form_builder_text_field.dart';
 
-class WeatherScreen extends StatefulWidget {
-  final Position position;
+class WeatherDashboardPage extends StatefulWidget {
+  final User user;
 
-  const WeatherScreen({Key key, this.position}) : super(key: key);
+  const WeatherDashboardPage({Key key, this.user}) : super(key: key);
 
   @override
-  _WeatherScreenState createState() => _WeatherScreenState();
+  _WeatherDashboardPageState createState() => _WeatherDashboardPageState();
 }
 
-class _WeatherScreenState extends State<WeatherScreen> {
+class _WeatherDashboardPageState extends State<WeatherDashboardPage> {
   final navigationService = sl<NavigationService>();
   TextEditingController cityNameController = TextEditingController();
   FocusNode cityNameFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -56,19 +57,32 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Drawer(
             child: ListView(padding: EdgeInsets.zero, children: <Widget>[
               DrawerHeader(
-                  child: Image.asset(
-                "assets/login_icon.png",
-                scale: 3,
-              )),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 72,
+                      width: 72,
+                      child: Image.asset(
+                        "assets/login_icon.png",
+                        scale: 3,
+                      ),
+                    ),
+                    Text(
+                      widget.user.email,
+                      style: TextStyle(fontSize: 10),
+                    ),
+                  ],
+                ),
+              ),
               ListTile(
-                title: Text(changeCity),
+                title: Text(changeCityText),
                 onTap: () {
                   Navigator.pop(context);
                   _showCityChangeDialog();
                 },
               ),
               ListTile(
-                title: Text(logout),
+                title: Text(logoutText),
                 onTap: () {
                   BlocProvider.of<AppStartBloc>(context)..add(LoggedOut());
                   navigationService.navigateToAndRemoveUntil(WeatherAppRoutes.signUpOrSignIn);
@@ -85,10 +99,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
               ),
             );
           } else if (state is WeatherError || state is WeatherEmpty) {
-            String errorText = 'There was an error fetching weather data';
-            if (state is WeatherError) {
-                errorText = state.errorMessage;
-            }
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -121,24 +131,32 @@ class _WeatherScreenState extends State<WeatherScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Center(child: Text(changeCity)),
+            title: Center(
+              child: Text(
+                changeCityText,
+              ),
+            ),
             actions: <Widget>[
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
                 child: WeatherAppButton(
-                  text: okButton,
+                  text: okButtonText,
                   onPressed: () {
-                    BlocProvider.of<WeatherBloc>(context)
-                      ..add(FetchWeather(cityName: cityNameController.text));
-                    FocusScope.of(context).unfocus();
+                    if (cityNameController.text.isEmpty) {
+                      BlocProvider.of<WeatherBloc>(context)..add(FetchWeatherForCurrentLocation());
+                    } else {
+                      BlocProvider.of<WeatherBloc>(context)
+                        ..add(FetchWeatherForGivenCity(cityName: cityNameController.text));
+                      FocusScope.of(context).unfocus();
+                    }
                     Navigator.of(context).pop();
                   },
                 ),
               )
             ],
             content: WeatherAppFormBuilderTextField(
-              attribute: cityName,
-              label: cityName,
+              attribute: cityNameText,
+              label: cityNameText,
               controller: cityNameController,
             ),
           );

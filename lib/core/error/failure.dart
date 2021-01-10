@@ -13,7 +13,3 @@ abstract class Failure extends Equatable {
 class GeneralFailure extends Failure {
   GeneralFailure({@required String failureMessage}) : super(failureMessage);
 }
-
-class HttpFailure extends Failure {
-  HttpFailure({@required String failureMessage}) : super(failureMessage);
-}

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:geolocator/geolocator.dart';
 import 'package:weather/core/routes/weather_app_routes.dart';
 import 'package:weather/features/dashboard/presentation/bloc/weather_bloc.dart';
 import 'package:weather/features/dashboard/presentation/bloc/weather_event.dart';
@@ -19,7 +18,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final navigator = sl<NavigationService>();
-  Position position;
 
   @override
   void initState() {
@@ -33,18 +31,13 @@ class _SplashScreenState extends State<SplashScreen> {
         if (state is Unauthenticated || state is Uninitialized) {
           Timer(
             Duration(seconds: 5),
-            () => navigator.navigateToAndReplace(WeatherAppRoutes.signUpOrSignIn,
-                arguments: position),
+            () => navigator.navigateToAndReplace(WeatherAppRoutes.signUpOrSignIn),
           );
         }
         if (state is Authenticated) {
           Timer(Duration(seconds: 5), () async {
-            BlocProvider.of<WeatherBloc>(context)
-              ..add(FetchWeather(
-                longitude: position.longitude,
-                latitude: position.latitude,
-              ));
-            navigator.navigateToAndRemoveUntil(WeatherAppRoutes.dashboard);
+            BlocProvider.of<WeatherBloc>(context)..add(FetchWeatherForCurrentLocation());
+            navigator.navigateToAndRemoveUntil(WeatherAppRoutes.dashboard, arguments: state.user);
           });
         }
       },

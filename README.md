@@ -1,16 +1,16 @@
-# weather
+# Weather App
 
-A new Flutter application.
+This Weather application is developed using Flutter Framework. I have followed [flutter clean TDD architecture](https://pub.dev/packages/flutter_clean_architecture), used [flutter bloc](https://pub.dev/packages/flutter_bloc) for state management and [dartz](https://pub.dev/packages/dartz) which makes error handling easier. 
 
-## Getting Started
+This app basically have 3 screens namely splash screen, login or sign up screen and dashboard screen to display weather information. 
 
-This project is a starting point for a Flutter application.
+To authenticate user, I have used [firebase authenticaton](https://pub.dev/packages/firebase_auth). Once the user is authenticatd, whenever he opens the app, he will be directly taken to dashboard screen after splash srcreen. 
 
-A few resources to get you started if this is your first Flutter project:
+To get details about weather depending upon the city, I have used [Open Weather API](https://openweathermap.org/). [Firebase remote config](https://pub.dev/packages/firebase_remote_config) is used to secure the weather app api key.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+This app uses current location to fetch weather information. If location permission is denied, then default location coordinate is used. In addition to this, user can manually enter city name to check the weather.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+For project demo, I have attached a video below.
+<p align="center">
+<img src="demo.gif" width="220" height="450"/>
+</p>

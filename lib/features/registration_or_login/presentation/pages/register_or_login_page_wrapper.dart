@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:weather/core/routes/weather_app_routes.dart';
-import 'package:weather/core/services/location_service.dart';
 import 'package:weather/core/services/service_locator.dart';
 import 'package:weather/core/services/navigation_service.dart';
 import 'package:weather/features/dashboard/presentation/bloc/weather_bloc.dart';
@@ -17,7 +15,6 @@ import 'package:weather/features/utils/widgets/weather_app_button_full_width.dar
 import 'package:weather/features/utils/widgets/weather_app_form_builder_text_field.dart';
 
 class RegistrationOrLoginPageWrapper extends StatelessWidget {
-
   const RegistrationOrLoginPageWrapper();
 
   @override
@@ -29,7 +26,6 @@ class RegistrationOrLoginPageWrapper extends StatelessWidget {
 }
 
 class RegistrationOrLoginPage extends StatefulWidget {
-
   RegistrationOrLoginPage();
 
   @override
@@ -48,21 +44,11 @@ class _RegistrationOrLoginPageState extends State<RegistrationOrLoginPage> {
   bool _confirmPasswordVisible = true;
   final _navigateService = sl<NavigationService>();
   bool _signIn = true;
-  Position position;
-  final locationService = sl<LocationService>();
 
   @override
   void initState() {
     super.initState();
-    _emailController.text = "dhoju.ramesh03@gmail.com";
-    _passwordController.text = "12345678";
-    _confirmPasswordController.text = "12345678";
-    getLocation();
   }
-
-void getLocation() async {
-  position = await locationService.getLocation();
-}
 
   @override
   Widget build(BuildContext context) {
@@ -88,10 +74,15 @@ void getLocation() async {
             ),
           );
       }
-      if (state is SignInSuccessState || state is SignUpSuccessState) {
-        BlocProvider.of<WeatherBloc>(context)
-          ..add(FetchWeather(longitude: position.longitude, latitude: position.latitude));
-        _navigateService.navigateToAndReplace(WeatherAppRoutes.dashboard);
+      if (state is SignUpSuccessState) {
+        BlocProvider.of<WeatherBloc>(context)..add(FetchWeatherForCurrentLocation());
+        _navigateService.navigateToAndRemoveUntil(WeatherAppRoutes.dashboard,
+            arguments: state.user);
+      }
+      if (state is SignInSuccessState) {
+        BlocProvider.of<WeatherBloc>(context)..add(FetchWeatherForCurrentLocation());
+        _navigateService.navigateToAndRemoveUntil(WeatherAppRoutes.dashboard,
+            arguments: state.user);
       }
     }, child: SingleChildScrollView(
       child:
@@ -131,20 +122,18 @@ void getLocation() async {
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: WeatherAppFormBuilderTextField(
-                              attribute: email,
+                              attribute: emailText,
                               controller: _emailController,
                               enableSuggestions: false,
                               autoCorrect: false,
-                              validators: [
-                                Validators.required(),
-                              ],
-                              label: email,
+                              validators: [Validators.required(), Validators.emailValidator()],
+                              label: emailText,
                               prefixIcon: Icon(Icons.person),
                               keyboardType: TextInputType.emailAddress,
                               focusNode: _emailFocusNode,
                               onChanged: (val) {
                                 setState(() {
-                                  _formKey.currentState.fields[email].currentState.validate();
+                                  _formKey.currentState.fields[emailText].currentState.validate();
                                 });
                               },
                             ),
@@ -155,9 +144,9 @@ void getLocation() async {
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: WeatherAppFormBuilderTextField(
-                              attribute: password,
+                              attribute: passwordText,
                               decoration: InputDecoration(
-                                labelText: password,
+                                labelText: passwordText,
                                 border: new OutlineInputBorder(
                                     borderSide: new BorderSide(color: Colors.grey)),
                                 focusedBorder: OutlineInputBorder(
@@ -184,6 +173,7 @@ void getLocation() async {
                               obscureText: _passwordVisible,
                               validators: [
                                 Validators.required(),
+                                Validators.length(),
                               ],
                               keyboardType: TextInputType.text,
                               focusNode: _passwordFocusNode,
@@ -192,7 +182,8 @@ void getLocation() async {
                               },
                               onChanged: (val) {
                                 setState(() {
-                                  _formKey.currentState.fields[password].currentState.validate();
+                                  _formKey.currentState.fields[passwordText].currentState
+                                      .validate();
                                 });
                               },
                             ),
@@ -204,9 +195,9 @@ void getLocation() async {
                               : Container(),
                           !_signIn
                               ? WeatherAppFormBuilderTextField(
-                                  attribute: confirmPassword,
+                                  attribute: confirmPasswordText,
                                   decoration: InputDecoration(
-                                    labelText: confirmPassword,
+                                    labelText: confirmPasswordText,
                                     border: new OutlineInputBorder(
                                         borderSide: new BorderSide(color: Colors.grey)),
                                     focusedBorder: OutlineInputBorder(
@@ -234,7 +225,11 @@ void getLocation() async {
                                   ),
                                   controller: _confirmPasswordController,
                                   obscureText: _confirmPasswordVisible,
-                                  validators: [],
+                                  validators: [
+                                    Validators.required(),
+                                    Validators.confirmPasswordMatchWithPassword(
+                                        _passwordController.text)
+                                  ],
                                   keyboardType: TextInputType.text,
                                   focusNode: _confirmPasswordFocusNode,
                                   onFieldSubmitted: (_) {
@@ -242,7 +237,7 @@ void getLocation() async {
                                   },
                                   onChanged: (val) {
                                     setState(() {
-                                      _formKey.currentState.fields[confirmPassword].currentState
+                                      _formKey.currentState.fields[confirmPasswordText].currentState
                                           .validate();
                                     });
                                   },
@@ -254,7 +249,7 @@ void getLocation() async {
                           BlocBuilder<RegistrationOrLoginBloc, RegistrationOrLoginState>(
                               builder: (context, state) {
                             return WeatherAppButtonFullWidth(
-                              text: _signIn ? signIn : signUp,
+                              text: _signIn ? signInButtonText : signUpButtonText,
                               showCircularProgressIndicator:
                                   (state is RegistrationOrLoginProcessingState) ? true : false,
                               showTickSymbol:
@@ -293,7 +288,7 @@ void getLocation() async {
                                   });
                                 },
                                 child: Text(
-                                  _signIn ? signUp : signIn,
+                                  _signIn ? signUpButtonText : signInButtonText,
                                   style:
                                       TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
                                 ),
@@ -321,6 +316,8 @@ void getLocation() async {
     _emailFocusNode.dispose();
     _passwordController.dispose();
     _passwordFocusNode.dispose();
+    _confirmPasswordController.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 }

@@ -1,39 +1,61 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:weather/features/registration_or_login/domain/repositories/user_repository.dart';
+import 'package:weather/features/utils/constants/strings.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  bool isSignedIn() {
-    final currentUser = _auth.currentUser;
-    return currentUser != null;
-  }
-
   @override
   User getUser() {
-    final currentUser = _auth.currentUser;
-    return currentUser;
+    try {
+      final currentUser = _auth.currentUser;
+      if (currentUser != null) {
+        return currentUser;
+      } else {
+        throw errorMessageSomethingWentWrong;
+      }
+    } catch (e) {
+      throw errorMessageSomethingWentWrong;
+    }
   }
 
   @override
   Future<User> signIn(String email, String password) async {
     try {
-      UserCredential result =
-          await _auth.signInWithEmailAndPassword(email: email, password: password);
+      final result = await _auth.signInWithEmailAndPassword(email: email, password: password);
       return result.user;
+    } on FirebaseException catch (e, s) {
+      if (e.code == "user-not-found") {
+        throw errorMessageNoAccountFoundForEmail;
+      } else if (e.code == "wrong-password") {
+        throw errorMessageInvalidPasswordOrNoPassword;
+      } else if (e.code == "network-request-failed") {
+        throw noInternetConnection;
+      } else {
+        throw errorMessageSomethingWentWrong;
+      }
     } catch (e) {
-      throw (e);
+      throw errorMessageSomethingWentWrong;
     }
   }
 
   @override
   Future<User> signUp(String email, String password) async {
     try {
-      UserCredential result =
-          await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      final result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       return result.user;
+    } on FirebaseException catch (e) {
+      if (e.code == "email-already-in-use") {
+        throw errorMessageEmailUsed;
+      } else if (e.code == "wrong-password") {
+        throw errorMessageInvalidPasswordOrNoPassword;
+      } else if (e.code == "network-request-failed") {
+        throw noInternetConnection;
+      } else {
+        throw errorMessageSomethingWentWrong;
+      }
     } catch (e) {
-      throw (e);
+      throw errorMessageSomethingWentWrong;
     }
   }
 
@@ -41,16 +63,7 @@ class UserRepositoryImpl implements UserRepository {
     try {
       await _auth.signOut();
     } catch (e) {
-      throw (e);
-    }
-  }
-
-  @override
-  Future<void> forgotPassword(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      throw (e);
+      throw errorMessageSomethingWentWrong;
     }
   }
 }

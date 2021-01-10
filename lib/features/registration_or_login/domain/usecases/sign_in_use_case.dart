@@ -23,7 +23,6 @@ class SignInUseCaseImpl implements SignInUseCase {
         return Left(GeneralFailure(failureMessage: pleaseTryAgain));
       }
     } catch (e) {
-      userRepository.signOut();
       return Left(GeneralFailure(failureMessage: e.toString()));
     }
   }

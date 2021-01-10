@@ -2,7 +2,9 @@ import 'package:weather/core/services/navigation_service.dart';
 import 'package:weather/core/services/remote_config_service.dart';
 import 'package:weather/features/app_start/domain/usecases/check_for_authentication_use_case.dart';
 import 'package:weather/features/dashboard/data/repositories/weather_repository_impl.dart';
-import 'package:weather/features/dashboard/domain/usecases/fetch_weather_use_case.dart';
+import 'package:weather/features/dashboard/domain/usecases/fetch_weather__for_given_city_use_case.dart';
+import 'package:weather/features/dashboard/domain/usecases/fetch_weather_for_given_coordinates_use_case.dart';
+import 'package:weather/features/dashboard/domain/usecases/fetch_weather_for_user_current_location_use_case.dart';
 import 'package:weather/features/registration_or_login/data/repositories/user_repository_impl.dart';
 import 'package:weather/features/registration_or_login/domain/repositories/user_repository.dart';
 import 'package:weather/features/app_start/presentation/bloc/app_start_bloc.dart';
@@ -29,7 +31,12 @@ Future<void> init() async {
   sl.registerLazySingleton<CheckForAuthenticationUseCase>(
       () => CheckForAuthenticationUseCaseImpl());
   sl.registerLazySingleton<SignInUseCase>(() => SignInUseCaseImpl());
-  sl.registerLazySingleton<FetchWeatherUseCase>(() => FetchWeatherUseCaseImpl());
+  sl.registerLazySingleton<FetchWeatherForGivenCityUseCase>(
+      () => FetchWeatherForGivenCityUseCaseImpl());
+  sl.registerLazySingleton<FetchWeatherForGivenLocationUseCase>(
+      () => FetchWeatherForGivenLocationUseCaseImpl());
+  sl.registerLazySingleton<FetchWeatherForCurrentLocationUseCase>(
+      () => FetchWeatherForCurrentLocationUseCaseImpl());
 
   ///repositories
   sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl());

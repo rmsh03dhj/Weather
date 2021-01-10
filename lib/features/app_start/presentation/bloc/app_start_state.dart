@@ -24,35 +24,3 @@ class Unauthenticated extends AppStartState {
   @override
   String toString() => 'Unauthenticated';
 }
-
-class FreeSomeSpaceState extends AppStartState {
-  @override
-  String toString() => 'FreeSomeSpaceState';
-}
-
-class AppStartErrorState extends AppStartState {
-  final String errorMessage;
-
-  AppStartErrorState(this.errorMessage);
-  @override
-  String toString() => 'AppStartErrorState';
-}
-
-class UpdateRequiredState extends AppStartState {
-  final String url;
-
-  UpdateRequiredState(this.url);
-
-  @override
-  String toString() => 'UpdateRequiredState';
-}
-
-class NoUpdateAvailableState extends AppStartState {
-  @override
-  String toString() => 'NoUpdateAvailableState';
-}
-
-class InAppUpdateNotSupportedState extends AppStartState {
-  @override
-  String toString() => 'InAppUpdateNotSupportedState';
-}

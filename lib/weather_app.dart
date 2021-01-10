@@ -44,7 +44,7 @@ class _WeatherAppState extends State<WeatherApp> {
           debugShowCheckedModeBanner: false,
           theme: ThemeData.dark(),
           routes: _registerRoutes(),
-          home: SplashScreen(),
+          onGenerateRoute: _registerRoutesWithParameters,
         ),
       ),
     );
@@ -53,7 +53,7 @@ class _WeatherAppState extends State<WeatherApp> {
 
 Map<String, WidgetBuilder> _registerRoutes() {
   return <String, WidgetBuilder>{
-    WeatherAppRoutes.dashboard: (context) => WeatherScreen(),
+    WeatherAppRoutes.home: (context) => SplashScreen(),
     WeatherAppRoutes.signUpOrSignIn: (context) => _buildSignInWithEmailBloc(),
   };
 }
@@ -63,4 +63,22 @@ BlocProvider<RegistrationOrLoginBloc> _buildSignInWithEmailBloc() {
     create: (context) => sl<RegistrationOrLoginBloc>(),
     child: RegistrationOrLoginPageWrapper(),
   );
+}
+
+Route _registerRoutesWithParameters(RouteSettings settings) {
+  if (settings.name == WeatherAppRoutes.dashboard) {
+    final user = settings.arguments;
+    return MaterialPageRoute(
+      settings: RouteSettings(name: WeatherAppRoutes.dashboard),
+      builder: (context) {
+        return WeatherDashboardPage(user: user);
+      },
+    );
+  } else {
+    return MaterialPageRoute(
+      builder: (context) {
+        return SplashScreen();
+      },
+    );
+  }
 }

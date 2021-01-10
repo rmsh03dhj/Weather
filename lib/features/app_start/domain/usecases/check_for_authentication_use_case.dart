@@ -14,18 +14,11 @@ class CheckForAuthenticationUseCaseImpl implements CheckForAuthenticationUseCase
   Future<Either<Failure, User>> execute(NoParams noParams) async {
     try {
       final user = userRepository.getUser();
-        if (user != null) {
-          print(user.email);
-          return Right(user);
-      } else {
-        return Left(GeneralFailure(failureMessage: "Firebase user null"));
-      }
+      return Right(user);
     } catch (e) {
       return Left(GeneralFailure(failureMessage: e.toString()));
     }
   }
 }
 
-class NoParams{
-
-}
+class NoParams {}

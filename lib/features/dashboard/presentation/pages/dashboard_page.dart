@@ -67,14 +67,31 @@ class _WeatherDashboardPageState extends State<WeatherDashboardPage> {
                         scale: 3,
                       ),
                     ),
-                    Text(
-                      widget.user.email,
-                      style: TextStyle(fontSize: 10),
+                    Container(
+                      height: 24,
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Welcome",
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ),
+                    Container(
+                      height: 4,
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        widget.user.email,
+                        style: TextStyle(fontSize: 10),
+                      ),
                     ),
                   ],
                 ),
               ),
               ListTile(
+                leading: Icon(Icons.location_on),
                 title: Text(changeCityText),
                 onTap: () {
                   Navigator.pop(context);
@@ -83,6 +100,7 @@ class _WeatherDashboardPageState extends State<WeatherDashboardPage> {
               ),
               ListTile(
                 title: Text(logoutText),
+                leading: Icon(Icons.logout),
                 onTap: () {
                   BlocProvider.of<AppStartBloc>(context)..add(LoggedOut());
                   navigationService.navigateToAndRemoveUntil(WeatherAppRoutes.signUpOrSignIn);

@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:weather/features/dashboard/domain/entities/weather.dart';
 import 'package:weather/features/dashboard/presentation/pages/widgets/value_tile.dart';
 
-class HourlyWeatherForcastTile extends StatelessWidget {
-  const HourlyWeatherForcastTile({
+class HourlyWeatherForecastTile extends StatelessWidget {
+  const HourlyWeatherForecastTile({
     Key key,
     @required this.weathers,
   }) : super(key: key);
@@ -38,9 +38,9 @@ class HourlyWeatherForcastTile extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ValueTile(
-                    DateFormat('E, h a')
-                        .format(DateTime.fromMillisecondsSinceEpoch(item.time * 1000)),
                     '${item.temperature.celsius.round()} \u2103',
+                    label: DateFormat('E, h a')
+                        .format(DateTime.fromMillisecondsSinceEpoch(item.time * 1000)),
                     iconData: item.getIconData(),
                   ),
                 ),

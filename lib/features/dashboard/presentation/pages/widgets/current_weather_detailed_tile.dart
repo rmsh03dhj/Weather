@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:weather/features/dashboard/domain/entities/weather.dart';
-import 'package:weather/features/dashboard/presentation/pages/widgets/current_weather_condition.dart';
-import 'package:weather/features/dashboard/presentation/pages/widgets/hourly_weather_forcast_tile.dart';
+import 'package:weather/features/dashboard/presentation/pages/widgets/current_weather_condition_tile.dart';
 import 'package:weather/features/dashboard/presentation/pages/widgets/value_tile.dart';
+import 'package:weather/features/dashboard/presentation/pages/widgets/vertical_divider_bar.dart';
+
+import 'hourly_weather_forecast_tile.dart';
 
 class CurrentWeatherDetailedTile extends StatelessWidget {
   final Weather weather;
@@ -40,8 +41,8 @@ class CurrentWeatherDetailedTile extends StatelessWidget {
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 300,
-            child: CurrentWeatherCondition(
+            height: 330,
+            child: CurrentWeatherConditionTile(
               weather: weather,
             ),
           ),
@@ -49,7 +50,7 @@ class CurrentWeatherDetailedTile extends StatelessWidget {
             child: Divider(),
             padding: EdgeInsets.all(10),
           ),
-          HourlyWeatherForcastTile(weathers: weather.forecast),
+          HourlyWeatherForecastTile(weathers: weather.forecast),
           Padding(
             child: Divider(
               color: Theme.of(context).accentColor.withAlpha(50),
@@ -57,43 +58,20 @@ class CurrentWeatherDetailedTile extends StatelessWidget {
             padding: EdgeInsets.all(10),
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-            ValueTile("wind speed", '${this.weather.windSpeed} m/s'),
-            Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15),
-              child: Center(
-                  child: Container(
-                width: 1,
-                height: 30,
-                color: Theme.of(context).accentColor.withAlpha(50),
-              )),
-            ),
             ValueTile(
-                "sunrise",
-                DateFormat('h:m a')
-                    .format(DateTime.fromMillisecondsSinceEpoch(this.weather.sunrise * 1000))),
-            Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15),
-              child: Center(
-                  child: Container(
-                width: 1,
-                height: 30,
-                color: Theme.of(context).accentColor.withAlpha(50),
-              )),
+              '${this.weather.windSpeed} m/s',
+              label: "wind speed",
             ),
+            VerticalDividerBar(),
             ValueTile(
-                "sunset",
-                DateFormat('h:m a')
-                    .format(DateTime.fromMillisecondsSinceEpoch(this.weather.sunset * 1000))),
-            Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15),
-              child: Center(
-                  child: Container(
-                width: 1,
-                height: 30,
-                color: Theme.of(context).accentColor.withAlpha(50),
-              )),
+              '${this.weather.pressure} hPa',
+              label: "pressure",
             ),
-            ValueTile("humidity", '${this.weather.humidity} %'),
+            VerticalDividerBar(),
+            ValueTile(
+              '${this.weather.humidity} %',
+              label: "humidity",
+            )
           ]),
         ],
       ),

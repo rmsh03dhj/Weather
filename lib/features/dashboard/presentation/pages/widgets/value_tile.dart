@@ -5,7 +5,7 @@ class ValueTile extends StatelessWidget {
   final String value;
   final IconData iconData;
 
-  ValueTile(this.label, this.value, {this.iconData});
+  ValueTile(this.value, {this.label, this.iconData});
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +13,11 @@ class ValueTile extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          this.label!=null?
           Text(
             this.label,
             style: TextStyle(color: Theme.of(context).disabledColor),
-          ),
+          ):Container(),
           SizedBox(
             height: 5,
           ),
